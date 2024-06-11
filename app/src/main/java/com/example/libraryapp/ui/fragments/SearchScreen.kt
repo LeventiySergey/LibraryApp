@@ -11,6 +11,8 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -26,8 +28,8 @@ import com.example.libraryapp.ui.fragments.Screen
 fun SearchScreen(navigationViewModel: NavigationViewModel) {
     // Переменная для хранения текста
     val searchText = remember { mutableStateOf("") }
-
-    Surface(color = Color.White) {
+    val isDarkThemeEnabled by navigationViewModel.isDarkThemeEnabled.observeAsState(false)
+    Surface(color = if (isDarkThemeEnabled) Color.Black else Color.White) {
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -39,7 +41,7 @@ fun SearchScreen(navigationViewModel: NavigationViewModel) {
                     .weight(1f),
                 contentAlignment = Alignment.Center
             ) {
-                Text("Пошук книг", fontSize = 40.sp, fontFamily = font)
+                Text("Пошук книг", fontSize = 40.sp, fontFamily = font, color = if (isDarkThemeEnabled) Color.White else Color.Black)
             }
 
             // Добавляем TextField для ввода текста
@@ -59,7 +61,7 @@ fun SearchScreen(navigationViewModel: NavigationViewModel) {
             }
             Button(modifier = Modifier
                 .fillMaxWidth()
-                .padding(bottom = 10.dp),
+                .padding(bottom = 40.dp),
                 onClick = { navigationViewModel.navigateTo(Screen.MAIN) }) {
                 Text("Головна сторінка", fontFamily = font, fontSize = 18.sp)
             }

@@ -8,10 +8,18 @@ class NavigationViewModel : ViewModel() {
     private val _currentScreen = MutableLiveData<Screen>()
     val currentScreen: LiveData<Screen> get() = _currentScreen
 
+    private val _isDarkThemeEnabled = MutableLiveData(false)
+    val isDarkThemeEnabled: LiveData<Boolean> get() = _isDarkThemeEnabled
+
+    fun toggleDarkTheme() {
+        _isDarkThemeEnabled.value = !_isDarkThemeEnabled.value!!
+    }
+
     fun navigateTo(screen: Screen) {
         _currentScreen.value = screen
     }
 }
+
 
 enum class Screen {
     MAIN,
