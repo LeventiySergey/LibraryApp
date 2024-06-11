@@ -20,9 +20,9 @@ class MainActivity : ComponentActivity() {
                 val currentScreen by navigationViewModel.currentScreen.observeAsState(Screen.MAIN)
                 when (currentScreen) {
                     Screen.MAIN -> MainScreen(navigationViewModel)
-                    Screen.SEARCH -> SearchScreen()
-                    Screen.FAVORITES -> FavoritesScreen()
-                    Screen.SETTINGS -> SettingsScreen()
+                    Screen.SEARCH -> SearchScreen(navigationViewModel)
+                    Screen.FAVORITES -> FavoritesScreen(navigationViewModel)
+                    Screen.SETTINGS -> SettingsScreen(navigationViewModel)
                 }
             }
         }
