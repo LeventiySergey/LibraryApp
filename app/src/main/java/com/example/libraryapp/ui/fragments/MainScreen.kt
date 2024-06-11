@@ -7,6 +7,8 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -21,7 +23,8 @@ import com.example.libraryapp.ui.fragments.Screen
 
 @Composable
 fun MainScreen(navigationViewModel: NavigationViewModel) {
-    Surface(color = Color.White) {
+    val isDarkThemeEnabled by navigationViewModel.isDarkThemeEnabled.observeAsState(false)
+    Surface(color = if (isDarkThemeEnabled) Color.Black else Color.White) {
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -33,9 +36,9 @@ fun MainScreen(navigationViewModel: NavigationViewModel) {
                     .weight(1f),
                 contentAlignment = Alignment.Center
             ) {
-                Text("Головна сторінка", fontSize = 40.sp, fontFamily = font)
+                Text("Головна сторінка", fontSize = 40.sp, fontFamily = font, color = if (isDarkThemeEnabled) Color.White else Color.Black)
             }
-            Image(modifier = Modifier.fillMaxWidth(), painter = painterResource(id = R.drawable.logo), contentDescription = "logo")
+            Image(modifier = Modifier.fillMaxWidth(), painter = painterResource(id = if (isDarkThemeEnabled) R.drawable.logodark else R.drawable.logo), contentDescription = "logo")
             Spacer(modifier = Modifier.weight(1f))
             Button(modifier = Modifier
                 .fillMaxWidth()
