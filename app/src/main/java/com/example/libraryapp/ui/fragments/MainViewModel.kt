@@ -4,7 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 
-class NavigationViewModel : ViewModel() {
+class MainViewModel : ViewModel() {
     private val _currentScreen = MutableLiveData<Screen>()
     val currentScreen: LiveData<Screen> get() = _currentScreen
 
