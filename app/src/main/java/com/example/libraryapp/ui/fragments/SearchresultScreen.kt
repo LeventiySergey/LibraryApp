@@ -1,5 +1,6 @@
 package com.example.libraryapp.ui
 
+import android.app.appsearch.SearchResult
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -24,24 +25,17 @@ import androidx.compose.ui.unit.sp
 import com.example.libraryapp.ui.fragments.NavigationViewModel
 import com.example.libraryapp.ui.fragments.Screen
 
+
 @Composable
-fun FavoritesScreen(navigationViewModel: NavigationViewModel) {
-    val isDrakThemeEnabled by navigationViewModel.isDarkThemeEnabled.observeAsState(false)
+fun SearchResultScreen(navigationViewModel: NavigationViewModel) {
+    val isDarkThemeEnabled by navigationViewModel.isDarkThemeEnabled.observeAsState(false)
 
-    Surface(color = if (isDrakThemeEnabled) Color.Black else Color.White) {
-        Column(modifier = Modifier
-            .fillMaxWidth()
-            .padding(16.dp)
-        ) {
+    val text = navigationViewModel.getResult()
 
-            Button(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(bottom = 40.dp),
-                onClick = { navigationViewModel.navigateTo(Screen.MAIN) }) {
-                Text("Головна сторінка", fontFamily = font, fontSize = 18.sp)
-            }
-        }
-
+    Button(modifier = Modifier
+        .fillMaxWidth()
+        .padding(bottom = 40.dp),
+        onClick = { navigationViewModel.navigateTo(Screen.MAIN) }) {
+        Text("Головна сторінка", fontFamily = font, fontSize = 18.sp)
     }
 }
