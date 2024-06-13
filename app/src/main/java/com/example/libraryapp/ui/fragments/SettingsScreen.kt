@@ -23,12 +23,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.libraryapp.ui.fragments.NavigationViewModel
+import com.example.libraryapp.ui.fragments.MainViewModel
 import com.example.libraryapp.ui.fragments.Screen
 
 @Composable
-fun SettingsScreen(navigationViewModel: NavigationViewModel) {
-    val isDarkThemeEnabled by navigationViewModel.isDarkThemeEnabled.observeAsState(false)
+fun SettingsScreen(mainViewModel: MainViewModel) {
+    val isDarkThemeEnabled by mainViewModel.isDarkThemeEnabled.observeAsState(false)
     Surface(color = if (isDarkThemeEnabled) Color.Black else Color.White){
         Column(
             modifier = Modifier
@@ -60,14 +60,14 @@ fun SettingsScreen(navigationViewModel: NavigationViewModel) {
 
                 Switch(
                     checked = isDarkThemeEnabled,
-                    onCheckedChange = { navigationViewModel.toggleDarkTheme() }
+                    onCheckedChange = { mainViewModel.toggleDarkTheme() }
                 )
             }
             Spacer(modifier = Modifier.weight(1f))
             Button(modifier = Modifier
                 .fillMaxWidth()
                 .padding(bottom = 40.dp),
-                onClick = { navigationViewModel.navigateTo(Screen.MAIN) }) {
+                onClick = { mainViewModel.navigateTo(Screen.MAIN) }) {
                 Text("Головна сторінка", fontFamily = font, fontSize = 18.sp)
             }
         }

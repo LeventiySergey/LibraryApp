@@ -18,12 +18,12 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.libraryapp.R
-import com.example.libraryapp.ui.fragments.NavigationViewModel
+import com.example.libraryapp.ui.fragments.MainViewModel
 import com.example.libraryapp.ui.fragments.Screen
 
 @Composable
-fun MainScreen(navigationViewModel: NavigationViewModel) {
-    val isDarkThemeEnabled by navigationViewModel.isDarkThemeEnabled.observeAsState(false)
+fun MainScreen(mainViewModel: MainViewModel) {
+    val isDarkThemeEnabled by mainViewModel.isDarkThemeEnabled.observeAsState(false)
     Surface(color = if (isDarkThemeEnabled) Color.Black else Color.White) {
         Column(
             modifier = Modifier
@@ -43,19 +43,19 @@ fun MainScreen(navigationViewModel: NavigationViewModel) {
             Button(modifier = Modifier
                 .fillMaxWidth()
                 .padding(bottom = 10.dp),
-                onClick = { navigationViewModel.navigateTo(Screen.SEARCH) }) {
+                onClick = { mainViewModel.navigateTo(Screen.SEARCH) }) {
                 Text("Пошук книг", fontFamily = font, fontSize = 18.sp)
             }
             Button(modifier = Modifier
                 .fillMaxWidth()
                 .padding(bottom=10.dp),
-                onClick = { navigationViewModel.navigateTo(Screen.FAVORITES) }) {
+                onClick = { mainViewModel.navigateTo(Screen.FAVORITES) }) {
                 Text("Улюблені книги", fontFamily = font, fontSize = 18.sp)
             }
             Button(modifier = Modifier
                 .fillMaxWidth()
                 .padding(bottom=40.dp),
-                onClick = { navigationViewModel.navigateTo(Screen.SETTINGS) }) {
+                onClick = { mainViewModel.navigateTo(Screen.SETTINGS) }) {
                 Text("Налаштування", fontFamily = font, fontSize = 18.sp)
             }
         }

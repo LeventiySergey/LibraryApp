@@ -24,18 +24,17 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.libraryapp.ui.fragments.NavigationViewModel
+import com.example.libraryapp.ui.fragments.MainViewModel
 import com.example.libraryapp.ui.fragments.Screen
 import java.io.Console
 
 @Composable
-fun SearchScreen(navigationViewModel: NavigationViewModel) {
+fun SearchScreen(mainViewModel: MainViewModel) {
     // Переменная для хранения текста
     var searchText by remember { mutableStateOf("") }
     val mContext = LocalContext.current
 
-    val isDarkThemeEnabled by navigationViewModel.isDarkThemeEnabled.observeAsState(false)
-
+    val isDarkThemeEnabled by mainViewModel.isDarkThemeEnabled.observeAsState(false)
     Surface(color = if (isDarkThemeEnabled) Color.Black else Color.White) {
         Column(
             modifier = Modifier
@@ -79,7 +78,7 @@ fun SearchScreen(navigationViewModel: NavigationViewModel) {
             Button(modifier = Modifier
                 .fillMaxWidth()
                 .padding(bottom = 40.dp),
-                onClick = { navigationViewModel.navigateTo(Screen.MAIN) }) {
+                onClick = { mainViewModel.navigateTo(Screen.MAIN) }) {
                 Text("Головна сторінка", fontFamily = font, fontSize = 18.sp)
             }
         }
