@@ -29,13 +29,22 @@ import com.example.libraryapp.ui.fragments.Screen
 @Composable
 fun SearchResultScreen(mainViewModel: MainViewModel) {
     val isDarkThemeEnabled by mainViewModel.isDarkThemeEnabled.observeAsState(false)
+    Surface(color = if (isDarkThemeEnabled) Color.Black else Color.White) {
+        val text = mainViewModel.getResult()
 
-    val text = mainViewModel.getResult()
-
-    Button(modifier = Modifier
-        .fillMaxWidth()
-        .padding(bottom = 40.dp),
-        onClick = { mainViewModel.navigateTo(Screen.MAIN) }) {
-        Text("Головна сторінка", fontFamily = font, fontSize = 18.sp)
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(16.dp)
+        ) {
+            Text(text, color = if (isDarkThemeEnabled) Color.White else Color.Black)
+            Spacer(modifier = Modifier.weight(1f))
+            Button(modifier = Modifier
+                .fillMaxWidth()
+                .padding(bottom = 40.dp),
+                onClick = { mainViewModel.navigateTo(Screen.MAIN) }) {
+                Text("Головна сторінка", fontFamily = font, fontSize = 18.sp)
+            }
+        }
     }
 }
