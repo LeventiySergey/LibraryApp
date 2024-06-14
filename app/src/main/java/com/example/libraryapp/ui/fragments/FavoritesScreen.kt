@@ -21,12 +21,12 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.libraryapp.ui.fragments.NavigationViewModel
+import com.example.libraryapp.ui.fragments.MainViewModel
 import com.example.libraryapp.ui.fragments.Screen
 
 @Composable
-fun FavoritesScreen(navigationViewModel: NavigationViewModel) {
-    val isDrakThemeEnabled by navigationViewModel.isDarkThemeEnabled.observeAsState(false)
+fun FavoritesScreen(mainViewModel: MainViewModel) {
+    val isDrakThemeEnabled by mainViewModel.isDarkThemeEnabled.observeAsState(false)
 
     Surface(color = if (isDrakThemeEnabled) Color.Black else Color.White) {
         Column(modifier = Modifier
@@ -38,7 +38,7 @@ fun FavoritesScreen(navigationViewModel: NavigationViewModel) {
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(bottom = 40.dp),
-                onClick = { navigationViewModel.navigateTo(Screen.MAIN) }) {
+                onClick = { mainViewModel.navigateTo(Screen.MAIN) }) {
                 Text("Головна сторінка", fontFamily = font, fontSize = 18.sp)
             }
         }

@@ -67,7 +67,7 @@ fun SearchScreen(mainViewModel: MainViewModel) {
                 onClick = {
                     if (searchText.isNotEmpty())
                         //тут добавить апишку для запроса книг и сделать парсинг json`a, который будет с бота
-                        navigationViewModel.navigateToResultScreen(searchText, Screen.SEARCH_RESULT)
+                        mainViewModel.navigateToResultScreen(searchText, Screen.SEARCH_RESULT)
                     else
                         Toast.makeText(mContext, "Пусте поле", Toast.LENGTH_LONG).show()
                 },

@@ -22,20 +22,20 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.libraryapp.ui.fragments.NavigationViewModel
+import com.example.libraryapp.ui.fragments.MainViewModel
 import com.example.libraryapp.ui.fragments.Screen
 
 
 @Composable
-fun SearchResultScreen(navigationViewModel: NavigationViewModel) {
-    val isDarkThemeEnabled by navigationViewModel.isDarkThemeEnabled.observeAsState(false)
+fun SearchResultScreen(mainViewModel: MainViewModel) {
+    val isDarkThemeEnabled by mainViewModel.isDarkThemeEnabled.observeAsState(false)
 
-    val text = navigationViewModel.getResult()
+    val text = mainViewModel.getResult()
 
     Button(modifier = Modifier
         .fillMaxWidth()
         .padding(bottom = 40.dp),
-        onClick = { navigationViewModel.navigateTo(Screen.MAIN) }) {
+        onClick = { mainViewModel.navigateTo(Screen.MAIN) }) {
         Text("Головна сторінка", fontFamily = font, fontSize = 18.sp)
     }
 }
