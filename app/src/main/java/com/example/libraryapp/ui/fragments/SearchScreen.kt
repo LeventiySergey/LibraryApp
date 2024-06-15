@@ -99,8 +99,13 @@ fun SearchScreen(mainViewModel: MainViewModel) {
                                     if (response.isSuccessful) {
                                         val chatResponse = response.body()
                                         val result = chatResponse?.choices?.firstOrNull()?.message?.content
+
                                         result?.let {
-                                            mainViewModel.navigateToResultScreen(it, Screen.SEARCH_RESULT)
+                                            if(result.isNotEmpty()) {
+                                                mainViewModel.navigateToResultScreen(it, Screen.SEARCH_RESULT)
+                                            } else {
+                                                Toast.makeText(mContext, "Failed to find books", Toast.LENGTH_LONG).show()
+                                            }
                                         }
                                     } else {
                                         Toast.makeText(mContext, "Error: ${response.message()}", Toast.LENGTH_LONG).show()

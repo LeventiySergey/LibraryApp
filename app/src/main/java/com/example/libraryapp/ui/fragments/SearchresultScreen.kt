@@ -1,6 +1,7 @@
 package com.example.libraryapp.ui
 
 import android.app.appsearch.SearchResult
+import android.icu.text.CaseMap.Title
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -24,20 +25,31 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.libraryapp.ui.fragments.MainViewModel
 import com.example.libraryapp.ui.fragments.Screen
+import kotlinx.coroutines.flow.StateFlow
+import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
+
 
 
 @Composable
 fun SearchResultScreen(mainViewModel: MainViewModel) {
     val isDarkThemeEnabled by mainViewModel.isDarkThemeEnabled.observeAsState(false)
     Surface(color = if (isDarkThemeEnabled) Color.Black else Color.White) {
-        val text = mainViewModel.getResult()
+        val jsonString = mainViewModel.getResult()
+
+        val bookList = parse(jsonString)
 
         Column(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(16.dp)
         ) {
-            Text(text, color = if (isDarkThemeEnabled) Color.White else Color.Black)
+            bookList.forEach { book ->
+                Text(
+                    text = ("Title: \"${book.title}\"\nAuthor: \"${book.author}\""),
+                    color = if (isDarkThemeEnabled) Color.White else Color.Black
+                )
+            }
             Spacer(modifier = Modifier.weight(1f))
             Button(modifier = Modifier
                 .fillMaxWidth()
@@ -48,3 +60,16 @@ fun SearchResultScreen(mainViewModel: MainViewModel) {
         }
     }
 }
+
+data class Book(val title: String, val author: String)
+data class Books(val books: List<Book>)
+
+fun parse(textToParse: String): List<Book> {
+
+    val gson = Gson()
+    val booksType = object : TypeToken<Books>() {}.type
+    val books: Books = gson.fromJson(textToParse, booksType)
+
+    return books.books
+}
+
