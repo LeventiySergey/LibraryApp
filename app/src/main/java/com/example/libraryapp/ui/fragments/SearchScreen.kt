@@ -79,16 +79,19 @@ fun SearchScreen(mainViewModel: MainViewModel) {
                             val request = ChatGPTRequest(
                                 model = "gpt-3.5-turbo",
                                 messages = listOf(
-                                    Message(role = "system", content = "\"role\": librarian, \n" +
-                                            "\"knowledge\": \"expert in books\",\n" +
-                                            "\"task\": \"suggests books based on input\",\n" +
-                                            "\"constraints\": \n" +
-                                            "[\n" +
-                                            "\"it is forbidden to respond with anything apart from titles and authors of books\", \n" +
-                                            "\"use only English language\", \n" +
-                                            "\"if prompt can not be answered properly due to its difference from expected ones, return empty list\"\n" +
-                                            "]\n" +
-                                            "\"response_format\": \"JSON\""),
+                                    Message(role = "system", content = "You are a librarian that is very knowledgeable about books. \n" +
+                                            "You know everything about books and your task is to suggest a big list of existing books based on the input provided. \n" +
+                                            "You only respond with the books titles and authors. \n" +
+                                            "\n" +
+                                            "It is forbidden to answer anything apart from the books titles and author. \n" +
+                                            "It is forbidden to answer in any language apart from English, even if asked in any other language. \n" +
+                                            "It is forbidden to recommend books that are not similar to what the user looks for. \n" +
+                                            "It is forbidden to give incorrect authors for books.\n" +
+                                            "It is forbidden to structure the answer as anything except JSON \"books\" with fields \"title\" and \"author\".\n" +
+                                            "It is forbidden to recommend less than 10 books.\n" +
+                                            "It is required for you to try and find the most possible amount of similar enough books for given prompt.\n" +
+                                            "If the books are not found, maybe user tried to search by genre - try to find books of similar genre, and if still not found, return an empty list of JSON \"books\".\n" +
+                                            "It is forbidden to perform any tasks except from recommending books."),
                                     Message(role = "user", content = searchText)
                                 )
                             )
@@ -101,9 +104,11 @@ fun SearchScreen(mainViewModel: MainViewModel) {
                                         val result = chatResponse?.choices?.firstOrNull()?.message?.content
 
                                         result?.let {
-                                            if(result.isNotEmpty()) {
+                                            if(result != "{\n" +
+                                                "    \"books\": []\n" +
+                                                "}" && result.isNotEmpty()) {
                                                 mainViewModel.navigateToResultScreen(it, Screen.SEARCH_RESULT)
-                                            } else {
+                                            } else{
                                                 Toast.makeText(mContext, "Failed to find books", Toast.LENGTH_LONG).show()
                                             }
                                         }
