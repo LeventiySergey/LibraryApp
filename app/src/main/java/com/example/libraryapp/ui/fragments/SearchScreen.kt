@@ -24,8 +24,17 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewModelScope
+import com.example.libraryapp.data.ChatGPTRequest
+import com.example.libraryapp.data.ChatGPTResponse
+import com.example.libraryapp.data.Message
+import com.example.libraryapp.network.RetrofitInstance
 import com.example.libraryapp.ui.fragments.MainViewModel
 import com.example.libraryapp.ui.fragments.Screen
+import kotlinx.coroutines.launch
+import retrofit2.Callback
+import retrofit2.Response
+import retrofit2.Call
 import java.io.Console
 
 @Composable
@@ -65,16 +74,60 @@ fun SearchScreen(mainViewModel: MainViewModel) {
                 .fillMaxWidth()
                 .padding(bottom = 10.dp),
                 onClick = {
-                    if (searchText.isNotEmpty())
-                        //тут добавить апишку для запроса книг и сделать парсинг json`a, который будет с бота
-                        mainViewModel.navigateToResultScreen(searchText, Screen.SEARCH_RESULT)
-                    else
+                    if (searchText.isNotEmpty()) {
+                        mainViewModel.viewModelScope.launch {
+                            val request = ChatGPTRequest(
+                                model = "gpt-3.5-turbo",
+                                messages = listOf(
+                                    Message(role = "system", content = "You are a librarian that is very knowledgeable about books. \n" +
+                                            "You know everything about books and your task is to suggest a big list of existing books based on the input provided. \n" +
+                                            "You only respond with the books titles and authors. \n" +
+                                            "\n" +
+                                            "It is forbidden to answer anything apart from the books titles and author. \n" +
+                                            "It is forbidden to answer in any language apart from English, even if asked in any other language. \n" +
+                                            "It is forbidden to recommend books that are not similar to what the user looks for. \n" +
+                                            "It is forbidden to give incorrect authors for books.\n" +
+                                            "It is forbidden to structure the answer as anything except JSON \"books\" with fields \"title\" and \"author\".\n" +
+                                            "It is forbidden to recommend less than 10 books.\n" +
+                                            "It is required for you to try and find the most possible amount of similar enough books for given prompt.\n" +
+                                            "If the books are not found, maybe user tried to search by genre - try to find books of similar genre, and if still not found, return an empty list of JSON \"books\".\n" +
+                                            "It is forbidden to perform any tasks except from recommending books."),
+                                    Message(role = "user", content = searchText)
+                                )
+                            )
+
+                            val call = RetrofitInstance.api.getChatGPTResponse(request)
+                            call.enqueue(object : Callback<ChatGPTResponse> {
+                                override fun onResponse(call: Call<ChatGPTResponse>, response: Response<ChatGPTResponse>) {
+                                    if (response.isSuccessful) {
+                                        val chatResponse = response.body()
+                                        val result = chatResponse?.choices?.firstOrNull()?.message?.content
+
+                                        result?.let {
+                                            if (it.contains("\"books\": []") || it == "[]") {
+                                                Toast.makeText(mContext, "Failed to find books", Toast.LENGTH_LONG).show()
+                                            } else {
+                                                mainViewModel.navigateToResultScreen(it, Screen.SEARCH_RESULT)
+                                            }
+                                        }
+                                    } else {
+                                        Toast.makeText(mContext, "Error: ${response.message()}", Toast.LENGTH_LONG).show()
+                                    }
+                                }
+
+                                override fun onFailure(call: Call<ChatGPTResponse>, t: Throwable) {
+                                    Toast.makeText(mContext, "Failed to connect to API", Toast.LENGTH_LONG).show()
+                                }
+                            })
+                        }
+                    } else {
                         Toast.makeText(mContext, "Пусте поле", Toast.LENGTH_LONG).show()
-                },
-            )
-            {
+                    }
+                }
+            ) {
                 Text("Пошук", fontFamily = font, fontSize = 18.sp)
             }
+
             Button(modifier = Modifier
                 .fillMaxWidth()
                 .padding(bottom = 40.dp),
