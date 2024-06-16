@@ -1,31 +1,26 @@
 package com.example.libraryapp.ui
 
-import android.app.appsearch.SearchResult
-import android.icu.text.CaseMap.Title
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
-import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.libraryapp.ui.fragments.MainViewModel
 import com.example.libraryapp.ui.fragments.Screen
-import kotlinx.coroutines.flow.StateFlow
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 
@@ -39,23 +34,33 @@ fun SearchResultScreen(mainViewModel: MainViewModel) {
 
         val bookList = parse(jsonString)
 
-        Column(
+        LazyColumn(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(16.dp)
+                .padding(horizontal = 16.dp).padding(bottom=16.dp)
         ) {
-            bookList.forEach { book ->
-                Text(
-                    text = ("Title: \"${book.title}\"\nAuthor: \"${book.author}\""),
-                    color = if (isDarkThemeEnabled) Color.White else Color.Black
-                )
+            item {
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth(),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Text("Знайдено:", fontSize = 40.sp, fontFamily = font, color = if (isDarkThemeEnabled) Color.White else Color.Black)
+                }
             }
-            Spacer(modifier = Modifier.weight(1f))
-            Button(modifier = Modifier
-                .fillMaxWidth()
-                .padding(bottom = 40.dp),
-                onClick = { mainViewModel.navigateTo(Screen.MAIN) }) {
-                Text("Головна сторінка", fontFamily = font, fontSize = 18.sp)
+            items(bookList) { book ->
+                BookCard(book = book)
+            }
+
+            item {
+                Button(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(bottom = 40.dp, top = 16.dp),
+                    onClick = { mainViewModel.navigateTo(Screen.MAIN) }
+                ) {
+                    Text("Головна сторінка", fontFamily = font, fontSize = 18.sp)
+                }
             }
         }
     }
@@ -71,5 +76,32 @@ fun parse(textToParse: String): List<Book> {
     val books: Books = gson.fromJson(textToParse, booksType)
 
     return books.books
+}
+
+@Composable
+fun BookCard(book: Book) {
+    Surface(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(vertical = 8.dp),
+        color = Color(android.graphics.Color.parseColor("#57a5bd")),
+        shape = RoundedCornerShape(8.dp)
+    ) {
+        Column(
+            modifier = Modifier.padding(16.dp)
+        ) {
+            Text(
+                text = "Назва: ${book.title}",
+                color = Color.White,
+                fontFamily = font
+            )
+            Text(
+                text = "Автор: ${book.author}",
+                modifier = Modifier.padding(top = 8.dp),
+                color = Color.White,
+                fontFamily = font
+            )
+        }
+    }
 }
 
