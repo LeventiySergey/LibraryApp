@@ -36,7 +36,7 @@ fun MainScreen(mainViewModel: MainViewModel) {
                     .weight(1f),
                 contentAlignment = Alignment.Center
             ) {
-                Text("Головна сторінка", fontSize = 40.sp, fontFamily = font, color = if (isDarkThemeEnabled) Color.White else Color.Black)
+                Text("Main page", fontSize = 40.sp, fontFamily = font, color = if (isDarkThemeEnabled) Color.White else Color.Black)
             }
             Image(modifier = Modifier.fillMaxWidth(), painter = painterResource(id = if (isDarkThemeEnabled) R.drawable.logodark else R.drawable.logo), contentDescription = "logo")
             Spacer(modifier = Modifier.weight(1f))
@@ -44,19 +44,19 @@ fun MainScreen(mainViewModel: MainViewModel) {
                 .fillMaxWidth()
                 .padding(bottom = 10.dp),
                 onClick = { mainViewModel.navigateTo(Screen.SEARCH) }) {
-                Text("Пошук книг", fontFamily = font, fontSize = 18.sp)
+                Text("Search books", fontFamily = font, fontSize = 18.sp)
             }
             Button(modifier = Modifier
                 .fillMaxWidth()
                 .padding(bottom=10.dp),
                 onClick = { mainViewModel.navigateTo(Screen.FAVORITES) }) {
-                Text("Улюблені книги", fontFamily = font, fontSize = 18.sp)
+                Text("Favourites", fontFamily = font, fontSize = 18.sp)
             }
             Button(modifier = Modifier
                 .fillMaxWidth()
                 .padding(bottom=40.dp),
                 onClick = { mainViewModel.navigateTo(Screen.SETTINGS) }) {
-                Text("Налаштування", fontFamily = font, fontSize = 18.sp)
+                Text("Settings", fontFamily = font, fontSize = 18.sp)
             }
         }
     }

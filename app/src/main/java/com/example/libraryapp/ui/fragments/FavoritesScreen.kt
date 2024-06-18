@@ -39,7 +39,7 @@ fun FavoritesScreen(mainViewModel: MainViewModel) {
                     .fillMaxWidth()
                     .padding(bottom = 40.dp),
                 onClick = { mainViewModel.navigateTo(Screen.MAIN) }) {
-                Text("Головна сторінка", fontFamily = font, fontSize = 18.sp)
+                Text("Main page", fontFamily = font, fontSize = 18.sp)
             }
         }
 

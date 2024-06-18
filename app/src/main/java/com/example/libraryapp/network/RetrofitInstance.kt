@@ -15,4 +15,15 @@ object RetrofitInstance {
     val api: ChatGPTService by lazy {
         retrofit.create(ChatGPTService::class.java)
     }
+
+    private val googleBooksRetrofit by lazy {
+        Retrofit.Builder()
+            .baseUrl("https://www.googleapis.com/")
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
+    }
+
+    val googleBooksApi: GoogleBooksService by lazy {
+        googleBooksRetrofit.create(GoogleBooksService::class.java)
+    }
 }
