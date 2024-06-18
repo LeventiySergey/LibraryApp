@@ -1,5 +1,6 @@
 package com.example.libraryapp.ui
 
+import android.util.Log
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -50,7 +51,7 @@ fun SearchResultScreen(mainViewModel: MainViewModel) {
                         .fillMaxWidth(),
                     contentAlignment = Alignment.Center
                 ) {
-                    Text("Знайдено:", fontSize = 40.sp, fontFamily = font, color = if (isDarkThemeEnabled) Color.White else Color.Black)
+                    Text("Found:", fontSize = 40.sp, fontFamily = font, color = if (isDarkThemeEnabled) Color.White else Color.Black)
                 }
             }
             items(bookList) { book ->
@@ -64,7 +65,7 @@ fun SearchResultScreen(mainViewModel: MainViewModel) {
                         .padding(bottom = 40.dp, top = 16.dp),
                     onClick = { mainViewModel.navigateTo(Screen.MAIN) }
                 ) {
-                    Text("Головна сторінка", fontFamily = font, fontSize = 18.sp)
+                    Text("Main page", fontFamily = font, fontSize = 18.sp)
                 }
             }
         }
@@ -91,17 +92,19 @@ fun BookCard(mainViewModel: MainViewModel, book: Book) {
                                 "authors" to it.volumeInfo.authors,
                                 "description" to it.volumeInfo.description,
                                 "infoLink" to it.volumeInfo.infoLink,
-                                "thumbnail" to it.volumeInfo.imageLinks?.thumbnail
+                                "pageCount" to it.volumeInfo.pageCount,
+                                "thumbnail" to it.volumeInfo.imageLinks?.thumbnail,
+                                "categories" to it.volumeInfo.categories
                             )
                         }
                         mainViewModel.navigateToBookDetails(books?.get(0), Screen.BOOK_DETAILS)
                     } else {
-                        // Обработка ошибки
+                        Log.e("BookCard", "Failed to fetch book details. Error code: ${response.code()}")
                     }
                 }
 
                 override fun onFailure(call: Call<GoogleBooksResponse>, t: Throwable) {
-                    // Обработка ошибки
+                    Log.e("BookCard", "Network request failed", t)
                 }
             })
 
