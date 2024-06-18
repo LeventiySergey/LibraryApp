@@ -3,6 +3,9 @@ package com.example.libraryapp.ui.fragments
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.example.libraryapp.data.BookItem
+import com.example.libraryapp.data.GoogleBooksResponse
+import com.example.libraryapp.network.GoogleBooksService
 import org.w3c.dom.Text
 
 class MainViewModel : ViewModel() {
@@ -13,6 +16,8 @@ class MainViewModel : ViewModel() {
     val isDarkThemeEnabled: LiveData<Boolean> get() = _isDarkThemeEnabled
 
     private var resultText = ""
+
+    private var book: Map<String, Any?>? = null
 
     fun toggleDarkTheme() {
         _isDarkThemeEnabled.value = !_isDarkThemeEnabled.value!!
@@ -27,8 +32,17 @@ class MainViewModel : ViewModel() {
         _currentScreen.value = screen
     }
 
+    fun navigateToBookDetails(book: Map<String, Any?>?, screen: Screen) {
+        this.book = book
+        _currentScreen.value = screen
+    }
+
     fun getResult(): String {
         return this.resultText
+    }
+
+    fun getBookDetails(): Map<String, Any?>? {
+        return this.book
     }
 }
 
@@ -38,5 +52,6 @@ enum class Screen {
     SEARCH,
     FAVORITES,
     SETTINGS,
-    SEARCH_RESULT
+    SEARCH_RESULT,
+    BOOK_DETAILS
 }

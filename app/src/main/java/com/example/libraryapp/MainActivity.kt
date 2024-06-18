@@ -7,6 +7,7 @@ import androidx.activity.viewModels
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.text.input.TextFieldValue
+import com.example.libraryapp.ui.fragments.BookDetailsScreen
 import com.example.libraryapp.ui.fragments.MainViewModel
 import com.example.libraryapp.ui.fragments.Screen
 import com.example.libraryapp.ui.theme.LibraryAppTheme
@@ -26,6 +27,7 @@ class MainActivity : ComponentActivity() {
                     Screen.FAVORITES -> FavoritesScreen(mainViewModel)
                     Screen.SETTINGS -> SettingsScreen(mainViewModel)
                     Screen.SEARCH_RESULT -> SearchResultScreen(mainViewModel)
+                    Screen.BOOK_DETAILS -> BookDetailsScreen(mainViewModel)
                 }
             }
         }

@@ -19,10 +19,15 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.libraryapp.data.GoogleBooksResponse
+import com.example.libraryapp.network.RetrofitInstance
 import com.example.libraryapp.ui.fragments.MainViewModel
 import com.example.libraryapp.ui.fragments.Screen
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
+import retrofit2.Callback
+import retrofit2.Response
+import retrofit2.Call
 
 
 
@@ -49,7 +54,7 @@ fun SearchResultScreen(mainViewModel: MainViewModel) {
                 }
             }
             items(bookList) { book ->
-                BookCard(book = book)
+                BookCard(mainViewModel, book = book)
             }
 
             item {
@@ -66,26 +71,41 @@ fun SearchResultScreen(mainViewModel: MainViewModel) {
     }
 }
 
-data class Book(val title: String, val author: String)
-data class Books(val books: List<Book>)
-
-fun parse(textToParse: String): List<Book> {
-
-    val gson = Gson()
-    val booksType = object : TypeToken<Books>() {}.type
-    val books: Books = gson.fromJson(textToParse, booksType)
-
-    return books.books
-}
-
 @Composable
-fun BookCard(book: Book) {
+fun BookCard(mainViewModel: MainViewModel, book: Book) {
     Surface(
         modifier = Modifier
             .fillMaxWidth()
             .padding(vertical = 8.dp),
         color = Color(android.graphics.Color.parseColor("#57a5bd")),
-        shape = RoundedCornerShape(8.dp)
+        shape = RoundedCornerShape(8.dp),
+        onClick = {
+            val googleBooksCall = RetrofitInstance.googleBooksApi.searchBooks("inauthor:${book.author}+intitle:${book.title}")
+            googleBooksCall.enqueue(object : Callback<GoogleBooksResponse> {
+                override fun onResponse(call: Call<GoogleBooksResponse>, response: Response<GoogleBooksResponse>) {
+                    if (response.isSuccessful) {
+                        val googleBooksResponse = response.body()
+                        val books = googleBooksResponse?.items?.map {
+                            mapOf(
+                                "title" to it.volumeInfo.title,
+                                "authors" to it.volumeInfo.authors,
+                                "description" to it.volumeInfo.description,
+                                "infoLink" to it.volumeInfo.infoLink,
+                                "thumbnail" to it.volumeInfo.imageLinks?.thumbnail
+                            )
+                        }
+                        mainViewModel.navigateToBookDetails(books?.get(0), Screen.BOOK_DETAILS)
+                    } else {
+                        // Обработка ошибки
+                    }
+                }
+
+                override fun onFailure(call: Call<GoogleBooksResponse>, t: Throwable) {
+                    // Обработка ошибки
+                }
+            })
+
+        }
     ) {
         Column(
             modifier = Modifier.padding(16.dp)
@@ -104,4 +124,18 @@ fun BookCard(book: Book) {
         }
     }
 }
+
+data class Book(val title: String, val author: String)
+data class Books(val books: List<Book>)
+
+fun parse(textToParse: String): List<Book> {
+
+    val gson = Gson()
+    val booksType = object : TypeToken<Books>() {}.type
+    val books: Books = gson.fromJson(textToParse, booksType)
+
+    return books.books
+}
+
+
 
