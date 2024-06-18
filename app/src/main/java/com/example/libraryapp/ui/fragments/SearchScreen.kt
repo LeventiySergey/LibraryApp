@@ -1,6 +1,7 @@
 package com.example.libraryapp.ui
 
 import android.widget.Toast
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -21,6 +22,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -63,10 +65,11 @@ fun SearchScreen(mainViewModel: MainViewModel) {
             OutlinedTextField(
                 value = searchText,
                 onValueChange = { searchText = it },
-                label = { Text("Введіть текст для пошуку") },
+                label = { Text("Введіть текст для пошуку", color = if (isDarkThemeEnabled) Color.White else Color.Black) },
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(vertical = 16.dp)
+                    .padding(vertical = 16.dp),
+                textStyle = TextStyle(color = if (isDarkThemeEnabled) Color.White else Color.Black)
             )
 
             Spacer(modifier = Modifier.weight(1f))
