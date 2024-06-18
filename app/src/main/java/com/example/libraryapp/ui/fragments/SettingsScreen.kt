@@ -41,7 +41,7 @@ fun SettingsScreen(mainViewModel: MainViewModel) {
                     .weight(1f),
                 contentAlignment = Alignment.Center
             ) {
-                Text("Налаштування", fontSize = 40.sp, fontFamily = font, color = if (isDarkThemeEnabled) Color.White else Color.Black)
+                Text("Settings", fontSize = 40.sp, fontFamily = font, color = if (isDarkThemeEnabled) Color.White else Color.Black)
             }
             Spacer(modifier = Modifier.height(16.dp))
 
@@ -49,7 +49,7 @@ fun SettingsScreen(mainViewModel: MainViewModel) {
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(
-                    text = "Темна тема",
+                    text = "Dark theme",
                     fontSize = 24.sp,
                     fontFamily = font,
                     color = if (isDarkThemeEnabled) Color.White else Color.Black,
@@ -68,7 +68,7 @@ fun SettingsScreen(mainViewModel: MainViewModel) {
                 .fillMaxWidth()
                 .padding(bottom = 40.dp),
                 onClick = { mainViewModel.navigateTo(Screen.MAIN) }) {
-                Text("Головна сторінка", fontFamily = font, fontSize = 18.sp)
+                Text("Main page", fontFamily = font, fontSize = 18.sp)
             }
         }
     }

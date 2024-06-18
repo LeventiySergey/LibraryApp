@@ -58,14 +58,14 @@ fun SearchScreen(mainViewModel: MainViewModel) {
                     .weight(1f),
                 contentAlignment = Alignment.Center
             ) {
-                Text("Пошук книг", fontSize = 40.sp, fontFamily = font, color = if (isDarkThemeEnabled) Color.White else Color.Black)
+                Text("Search books", fontSize = 40.sp, fontFamily = font, color = if (isDarkThemeEnabled) Color.White else Color.Black)
             }
 
             // Добавляем TextField для ввода текста
             OutlinedTextField(
                 value = searchText,
                 onValueChange = { searchText = it },
-                label = { Text("Введіть текст для пошуку", color = if (isDarkThemeEnabled) Color.White else Color.Black) },
+                label = { Text("Enter text to search", color = if (isDarkThemeEnabled) Color.White else Color.Black) },
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(vertical = 16.dp),
@@ -124,18 +124,18 @@ fun SearchScreen(mainViewModel: MainViewModel) {
                             })
                         }
                     } else {
-                        Toast.makeText(mContext, "Пусте поле", Toast.LENGTH_LONG).show()
+                        Toast.makeText(mContext, "Empty field", Toast.LENGTH_LONG).show()
                     }
                 }
             ) {
-                Text("Пошук", fontFamily = font, fontSize = 18.sp)
+                Text("Search", fontFamily = font, fontSize = 18.sp)
             }
 
             Button(modifier = Modifier
                 .fillMaxWidth()
                 .padding(bottom = 40.dp),
                 onClick = { mainViewModel.navigateTo(Screen.MAIN) }) {
-                Text("Головна сторінка", fontFamily = font, fontSize = 18.sp)
+                Text("Main page", fontFamily = font, fontSize = 18.sp)
             }
         }
     }
