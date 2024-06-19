@@ -24,6 +24,8 @@ import coil.request.ImageResult
 import coil.compose.rememberAsyncImagePainter
 import android.util.Log
 import coil.compose.rememberImagePainter
+import com.example.libraryapp.data.DatabaseHandler
+import com.example.libraryapp.ui.Books
 import com.example.libraryapp.ui.font
 
 @Composable
@@ -140,6 +142,21 @@ fun BookDetailsScreen(mainViewModel: MainViewModel) {
                         modifier = Modifier.fillMaxWidth()
                     ) {
                         Text("More information", fontFamily = font, fontSize = 18.sp)
+                    }
+                    Spacer(modifier = Modifier.height(16.dp))
+                    Button(
+                        onClick = {
+                            val authors = bookDetails?.get("authors") as? List<String> ?: emptyList()
+                            val book = com.example.libraryapp.data.Books(
+                                bookDetails?.get("title").toString(),
+                                authors.joinToString(",")
+                            )
+                            var db = DatabaseHandler(context)
+                            db.insertData(book)
+                        },
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
+                        Text("Add to favourites", fontFamily = font, fontSize = 18.sp)
                     }
                     Spacer(modifier = Modifier.height(16.dp))
                     Button(

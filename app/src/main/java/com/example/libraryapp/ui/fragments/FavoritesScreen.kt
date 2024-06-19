@@ -1,16 +1,21 @@
 package com.example.libraryapp.ui
 
+import android.util.Log
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
@@ -18,30 +23,117 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.libraryapp.data.DatabaseHandler
+import com.example.libraryapp.data.GoogleBooksResponse
+import com.example.libraryapp.network.RetrofitInstance
 import com.example.libraryapp.ui.fragments.MainViewModel
 import com.example.libraryapp.ui.fragments.Screen
-
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 @Composable
 fun FavoritesScreen(mainViewModel: MainViewModel) {
-    val isDrakThemeEnabled by mainViewModel.isDarkThemeEnabled.observeAsState(false)
+    val isDarkThemeEnabled by mainViewModel.isDarkThemeEnabled.observeAsState(false)
+    val context = LocalContext.current
+    val dbHandler = DatabaseHandler(context)
+    val favoriteBooks = remember { mutableStateOf(listOf<Book>()) }
 
-    Surface(color = if (isDrakThemeEnabled) Color.Black else Color.White) {
-        Column(modifier = Modifier
-            .fillMaxWidth()
-            .padding(16.dp)
+    // Fetch favorite books from the database
+    LaunchedEffect(Unit) {
+        favoriteBooks.value = dbHandler.getFavoriteBooks()
+    }
+
+    Surface(color = if (isDarkThemeEnabled) Color.Black else Color.White) {
+        LazyColumn(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(16.dp)
         ) {
-
-            Button(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(bottom = 40.dp),
-                onClick = { mainViewModel.navigateTo(Screen.MAIN) }) {
-                Text("Main page", fontFamily = font, fontSize = 18.sp)
+            item {
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth(),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Text(
+                        "Favorites:",
+                        fontSize = 40.sp,
+                        fontFamily = font,
+                        color = if (isDarkThemeEnabled) Color.White else Color.Black
+                    )
+                }
+            }
+            items(favoriteBooks.value) { book ->
+                FavoriteBookCard(mainViewModel, book = book)
+            }
+            item {
+                Button(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(bottom = 40.dp, top = 16.dp),
+                    onClick = { mainViewModel.navigateTo(Screen.MAIN) }
+                ) {
+                    Text("Main page", fontFamily = font, fontSize = 18.sp)
+                }
             }
         }
+    }
+}
 
+@Composable
+fun FavoriteBookCard(mainViewModel: MainViewModel, book: Book) {
+    Surface(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(vertical = 8.dp),
+        color = Color(android.graphics.Color.parseColor("#57a5bd")),
+        shape = RoundedCornerShape(8.dp),
+        onClick = {
+            val googleBooksCall = RetrofitInstance.googleBooksApi.searchBooks("inauthor:${book.author}+intitle:${book.title}")
+            googleBooksCall.enqueue(object : Callback<GoogleBooksResponse> {
+                override fun onResponse(call: Call<GoogleBooksResponse>, response: Response<GoogleBooksResponse>) {
+                    if (response.isSuccessful) {
+                        val googleBooksResponse = response.body()
+                        val books = googleBooksResponse?.items?.map {
+                            mapOf(
+                                "title" to it.volumeInfo.title,
+                                "authors" to it.volumeInfo.authors,
+                                "description" to it.volumeInfo.description,
+                                "infoLink" to it.volumeInfo.infoLink,
+                                "pageCount" to it.volumeInfo.pageCount,
+                                "thumbnail" to it.volumeInfo.imageLinks?.thumbnail,
+                                "categories" to it.volumeInfo.categories
+                            )
+                        }
+                        mainViewModel.navigateToBookDetails(books?.get(0), Screen.BOOK_DETAILS)
+                    } else {
+                        Log.e("BookCard", "Failed to fetch book details. Error code: ${response.code()}")
+                    }
+                }
+
+                override fun onFailure(call: Call<GoogleBooksResponse>, t: Throwable) {
+                    Log.e("BookCard", "Network request failed", t)
+                }
+            })
+
+        }
+    ) {
+        Column(modifier = Modifier.padding(16.dp)) {
+            Text(
+                text = "Title: ${book.title}",
+                color = Color.White,
+                fontFamily = font
+            )
+            Text(
+                text = "Authors: ${book.author}",
+                modifier = Modifier.padding(top = 8.dp),
+                color = Color.White,
+                fontFamily = font
+            )
+        }
     }
 }
