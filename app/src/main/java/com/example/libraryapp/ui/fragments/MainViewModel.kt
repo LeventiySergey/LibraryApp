@@ -41,6 +41,11 @@ class MainViewModel : ViewModel() {
         return this.resultText
     }
 
+    fun setResult(text : String) {
+        this.resultText = text;
+    }
+
+
     fun getBookDetails(): Map<String, Any?>? {
         return this.book
     }
