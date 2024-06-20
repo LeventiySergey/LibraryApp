@@ -109,6 +109,7 @@ fun FavoriteBookCard(mainViewModel: MainViewModel, book: Book) {
                                 "categories" to it.volumeInfo.categories
                             )
                         }
+                        mainViewModel.setResult("");
                         mainViewModel.navigateToBookDetails(books?.get(0), Screen.BOOK_DETAILS)
                     } else {
                         Log.e("BookCard", "Failed to fetch book details. Error code: ${response.code()}")

@@ -33,6 +33,7 @@ fun BookDetailsScreen(mainViewModel: MainViewModel) {
     val isDarkThemeEnabled by mainViewModel.isDarkThemeEnabled.observeAsState(false)
     val bookDetails = mainViewModel.getBookDetails()
     val context = LocalContext.current
+
     Surface(color = if (isDarkThemeEnabled) Color.Black else Color.White) {
         LazyColumn(
             modifier = Modifier
@@ -152,11 +153,38 @@ fun BookDetailsScreen(mainViewModel: MainViewModel) {
                                 authors.joinToString(",")
                             )
                             var db = DatabaseHandler(context)
-                            db.insertData(book)
+
+                            if(!db.isBookInFavorites(book.title)) {
+                                db.insertData(book)
+                            }
+                            else {
+                                db.removeData(book.title)
+                            }
                         },
                         modifier = Modifier.fillMaxWidth()
                     ) {
-                        Text("Add to favourites", fontFamily = font, fontSize = 18.sp)
+                        var db = DatabaseHandler(context)
+                        if (db.isBookInFavorites(bookDetails?.get("title").toString())) {
+                            Text("Remove from favourites", fontFamily = font, fontSize = 18.sp)
+                        }
+                        else {
+                            Text("Add to favourites", fontFamily = font, fontSize = 18.sp)
+                        }
+                    }
+                    Spacer(modifier = Modifier.height(16.dp))
+                    Button(
+                        onClick = { if(mainViewModel.getResult().isNotEmpty())
+                                    {
+                                        mainViewModel.navigateTo(Screen.SEARCH_RESULT)
+                                    }
+                                    else
+                                    {
+                                        mainViewModel.navigateTo(Screen.FAVORITES)
+                                    }
+                                  },
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
+                        Text("Back", fontFamily = font, fontSize = 18.sp)
                     }
                     Spacer(modifier = Modifier.height(16.dp))
                     Button(

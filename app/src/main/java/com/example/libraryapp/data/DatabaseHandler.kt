@@ -40,6 +40,20 @@ class DatabaseHandler (var context: Context) : SQLiteOpenHelper(context, DATABAS
         }
     }
 
+    fun removeData(title: String) {
+        val db = this.writableDatabase
+        val whereClause = "$COL_TITLE = ?"
+        val whereArgs = arrayOf(title)
+
+        val result = db.delete(TABLE_NAME, whereClause, whereArgs)
+
+        if (result > 0) {
+            Toast.makeText(context, "Record deleted successfully", Toast.LENGTH_SHORT).show()
+        } else {
+            Toast.makeText(context, "Failed to delete record", Toast.LENGTH_SHORT).show()
+        }
+    }
+
     fun getFavoriteBooks(): List<Book> {
         val bookList = ArrayList<Book>()
         val db = this.readableDatabase
@@ -64,5 +78,12 @@ class DatabaseHandler (var context: Context) : SQLiteOpenHelper(context, DATABAS
         return bookList
     }
 
+    fun isBookInFavorites(name : String): Boolean {
+        val bookList = ArrayList<Book>()
+        val db = this.readableDatabase
+        val query = "SELECT * FROM $TABLE_NAME WHERE $COL_TITLE = \"$name\""
+        val result = db.rawQuery(query, null)
+        return result.moveToFirst()
+    }
 
 }
